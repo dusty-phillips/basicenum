@@ -1,5 +1,6 @@
 import enum
 import pickle
+import warnings
 
 import pytest
 
@@ -90,10 +91,13 @@ class TestClass:
         assert Enum.v3.value == 6
 
     def test_auto_interleave_str(self, module):
-        class Enum(module.Enum):
-            v1 = module.auto()
-            v2 = "5"
-            v3 = module.auto()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+
+            class Enum(module.Enum):
+                v1 = module.auto()
+                v2 = "5"
+                v3 = module.auto()
 
         assert Enum.v1.value == 1
         assert Enum.v2.value == "5"
